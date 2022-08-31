@@ -29,8 +29,9 @@ class Player {
         this.position = clampPosition(this.position, this.size, HEIGHT);
 
 
-        if (this.col.checkCollision(ball.col)) {
-            if (Math.abs(ball.speed.x) < 30) {
+        if (this.col.checkCollision(ball.col) && ball.lastHit != this) {
+            ball.lastHit = this;
+            if (Math.abs(ball.speed.x) < 24) {
                 ball.speed.x = ball.speed.x * -1.04;
             }
             else {
@@ -58,6 +59,8 @@ class Ball {
         this.color = color;
 
         this.col = new collider(new vector2(), 0);
+        this.delay = 60;
+        this.lastHit = null;
     }
 
     setCollider(col = new collider(new vector2(this.position.x, this.position.y), new vector2(this.size * 2, this.size * 2))) {
@@ -73,8 +76,39 @@ class Ball {
     }
 
 
+    reset()
+    {
+        entities.length = 0;
+
+        player1 = new Player(new vector2(60, 200), new vector2(20, 110), 20, "black", controller);
+        player1.setCollider();
+        entities.push(player1);
+
+        player2 = new Player(new vector2(WIDTH - 80, 200), new vector2(20, 110), 20, "black", controller2);
+        player2.setCollider();
+        entities.push(player2);
+
+        randY = Math.random() * 2.5;
+        ballSpeed = 11;
+        if (Math.random() > 0.5) {
+            randY *= -1;
+        }
+        if (Math.random() > 0.5) {
+            ballSpeed *= -1;
+        }
+
+        ball = new Ball(new vector2(WIDTH / 2, HEIGHT / 2 + 12), 12, new vector2(ballSpeed, 1), "black");
+        ball.setCollider();
+        entities.push(ball);
+    }
+
     /**Runs game logic */
     tick() {
+        if(this.delay > 0)
+        {
+            this.delay--;
+            return;
+        }
         var move = new vector2(this.speed.x, this.speed.y);
         this.position = this.position.add(move);
         this.col.position = this.position;
@@ -93,55 +127,11 @@ class Ball {
 
         if (this.position.x < 0) {
             score2++;
-
-            entities.length = 0;
-
-            player1 = new Player(new vector2(60, 200), new vector2(20, 110), 20, "black", controller);
-            player1.setCollider();
-            entities.push(player1);
-
-            player2 = new Player(new vector2(WIDTH - 80, 200), new vector2(20, 110), 20, "black", controller2);
-            player2.setCollider();
-            entities.push(player2);
-
-            randY = Math.random() * 2.5;
-            ballSpeed = 14;
-            if (Math.random() > 0.5) {
-                randY *= -1;
-            }
-            if (Math.random() > 0.5) {
-                ballSpeed *= -1;
-            }
-
-            ball = new Ball(new vector2(WIDTH / 2, HEIGHT / 2 + 12), 12, new vector2(ballSpeed, 1), "black");
-            ball.setCollider();
-            entities.push(ball);
+            this.reset();
         }
         else if (this.position.x > WIDTH + this.size) {
             score1++;
-
-            entities.length = 0;
-
-            player1 = new Player(new vector2(60, 200), new vector2(20, 110), 20, "black", controller);
-            player1.setCollider();
-            entities.push(player1);
-
-            player2 = new Player(new vector2(WIDTH - 80, 200), new vector2(20, 110), 20, "black", controller2);
-            player2.setCollider();
-            entities.push(player2);
-
-            randY = Math.random() * 2.5;
-            ballSpeed = 14;
-            if (Math.random() > 0.5) {
-                randY *= -1;
-            }
-            if (Math.random() > 0.5) {
-                ballSpeed *= -1;
-            }
-
-            ball = new Ball(new vector2(WIDTH / 2, HEIGHT / 2 + 12), 12, new vector2(ballSpeed, 1), "black");
-            ball.setCollider();
-            entities.push(ball);
+            this.reset()
         }
     }
 }

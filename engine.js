@@ -23,7 +23,7 @@ player2.setCollider();
 entities.push(player2);
 
 randY = Math.random() * 2.5;
-ballSpeed = 14;
+ballSpeed = 11;
 if(Math.random() > 0.5)
 {
     randY *= -1;
@@ -49,7 +49,7 @@ function gameLoop()
 
     ctx.font = "75px Arial";
     ctx.fillStyle = "black";
-    ctx.fillText(score1, 240, 100);
+    ctx.fillText(score1, 220, 100);
     
     
     ctx.fillText("|", 395, 90); 
